@@ -5,6 +5,7 @@ import java.util.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfers;
 
 public class TransfersSqlDAO implements TransfersDAO {
@@ -28,9 +29,12 @@ public class TransfersSqlDAO implements TransfersDAO {
 		return allTransfers;
 	}
 	
-	public void transferAmountTo(Transfers aTransfer) {
-		String transferAmount = "UPDATE accounts SET balance = ? WHERE account_id = ?";
-		jdbcTemplate.update(transferAmount, aTransfer.getBalance() - aTransfer.getAmount(), aTransfer.getAccountFrom());
+	public void transferAmountTo(Transfers transfer, Account fromAccount, Account toAccount) {
+		if (transfer.getAmount() > fromAccount.getBalance()) {
+			String transferAmount = "UPDATE accounts SET balance = ? WHERE account_id = ?";
+			jdbcTemplate.update(transferAmount, fromAccount.getBalance() - transfer.getAmount(), transfer.getAccountFrom());
+			jdbcTemplate.update(transferAmount, fromAccount.getBalance() + transfer.getAmount(), transfer.getAccountTo());
+		}
 	}
 	
 	private Transfers mapRowToTransfers(SqlRowSet results) {
