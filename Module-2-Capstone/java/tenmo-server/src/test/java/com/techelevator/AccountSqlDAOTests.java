@@ -1,12 +1,10 @@
-package com.techelevator.tenmo.dao;
-
-import java.sql.SQLException;
-
-import static org.junit.Assert.*;
+package com.techelevator;
 
 import org.junit.*;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.Test;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import java.sql.SQLException;
 
 import com.techelevator.tenmo.dao.AccountSqlDAO;
 
@@ -32,6 +30,12 @@ public class AccountSqlDAOTests {
 	
 	@Before
 	public void setup() {
-		dao = new AccountSqlDAO(dataSource);
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		dao = new AccountSqlDAO(jdbcTemplate);
+	}
+	
+	@Test
+	public void test() {
+		
 	}
 }

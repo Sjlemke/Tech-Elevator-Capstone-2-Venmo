@@ -1,15 +1,13 @@
 package com.techelevator.tenmo.dao;
 
-import javax.sql.DataSource;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 public class AccountSqlDAO implements AccountDAO {
 	private JdbcTemplate jdbcTemplate;
 
-    public AccountSqlDAO(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+    public AccountSqlDAO(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 	
     @Override
