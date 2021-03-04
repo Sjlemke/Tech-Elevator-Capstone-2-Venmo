@@ -37,6 +37,31 @@ public class TransfersSqlDAO implements TransfersDAO {
 		}
 	}
 	
+	public Transfers createTransfers(int accountFrom, int accountTo, double amount) {
+		Integer nextId;
+		SqlRowSet nextIdResult = jdbcTemplate.queryForRowSet("SELECT nextval('seq_department_id')");
+		if(nextIdResult.next()) {               
+			nextId = nextIdResult.getInt(1);    
+		} else {                               
+			throw new RuntimeException("Something went wrong while getting an id for the new city");
+		}
+		
+		
+		String sqlInsertTransfers = "INSERT INTO transfers(trasfer_type_id, transfer_status_id, account_from, account_to, _amount) " +
+   				"VALUES(?, ?, ?, ?, ?)"; 
+		jdbcTemplate.update(sqlInsertTransfers, 2, 2, accountFrom, accountTo, amount);
+		Transfers newTransfers = new Transfers();
+        newTransfers.setAccountFrom(accountFrom);
+        newTransfers.setAccountTo(accountTo);
+        newTransfers.setAmount(amount);
+        newTransfers.setTransferId(2);
+        newTransfers.setTransferStatusId(2);
+        newTransfers.setTransferTypeId(nextId);
+        
+        return newTransfers;
+	}
+	
+	
 	private Transfers mapRowToTransfers(SqlRowSet results) {
 		Transfers singleTransfer = new Transfers();
 		singleTransfer.setTransferTypeId(results.getInt("transfer_type_id"));

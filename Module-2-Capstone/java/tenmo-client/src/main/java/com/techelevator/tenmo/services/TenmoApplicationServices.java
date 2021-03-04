@@ -1,6 +1,10 @@
 package com.techelevator.tenmo.services;
 
+import java.util.*;
+
 import org.springframework.web.client.RestTemplate;
+
+import com.techelevator.tenmo.models.*;
 
 /*******************************************************************************************************
  * This is where you code Application Services required by your solution
@@ -18,5 +22,9 @@ public class TenmoApplicationServices {
 	
 	public Double getBalance(Integer userId) {
 		return restTemplate.getForObject(URL + "/users/" + userId + "/balance", Double.class);
+	}
+	
+	public List<User> getAllUsers() {
+		return Arrays.asList(restTemplate.getForObject(URL + "/users/" , User[].class));
 	}
 }
