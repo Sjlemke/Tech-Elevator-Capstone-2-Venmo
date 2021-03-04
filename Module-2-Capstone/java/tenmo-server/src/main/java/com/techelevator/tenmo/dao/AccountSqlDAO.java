@@ -4,6 +4,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import com.techelevator.tenmo.model.Account;
+
 @Component
 public class AccountSqlDAO implements AccountDAO {
 	private JdbcTemplate jdbcTemplate;
@@ -11,7 +13,7 @@ public class AccountSqlDAO implements AccountDAO {
     public AccountSqlDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-	
+    
     @Override
     public Double getBalanceByUserId(Integer userId) {
     	String getBalance = "SELECT balance " +

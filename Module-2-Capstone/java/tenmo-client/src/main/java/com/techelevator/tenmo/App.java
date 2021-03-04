@@ -1,10 +1,8 @@
 package com.techelevator.tenmo;
 
-import java.util.List;
+import java.util.*;
 
-import com.techelevator.tenmo.models.AuthenticatedUser;
-import com.techelevator.tenmo.models.User;
-import com.techelevator.tenmo.models.UserCredentials;
+import com.techelevator.tenmo.models.*;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.tenmo.services.TenmoApplicationServices;
@@ -39,7 +37,6 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     public App(ConsoleService console, AuthenticationService authenticationService) {
 		this.console = console;
 		this.authenticationService = authenticationService;
-		tenmoApplicationServices = new TenmoApplicationServices(API_BASE_URL);
 	}
 
 	public void run() {
@@ -92,9 +89,21 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private void sendBucks() {
 		// TODO Auto-generated method stub
 		List<User> allUsers = tenmoApplicationServices.getAllUsers();
-		System.out.println("Choose a User to Send Bucks To");
-		for(User aUser : allUsers) {
-		System.out.println(aUser.getId());
+		System.out.println("Users list:\n");
+		System.out.printf("%5s   %-15s\n", "Id", "Username");
+		System.out.println("-------------------------");
+		for (User aUser : allUsers) {
+			System.out.printf("%5s   %-15s\n", aUser.getId(), aUser.getUsername());
+		}
+		
+		Scanner input = new Scanner(System.in);
+		System.out.print("\nEnter the ID to send to: ");
+		int toUserId = Integer.parseInt(input.next());
+		System.out.print("Enter the amount you want to transfer over: ");
+		double amountToTransfer = Double.parseDouble(input.next());
+		
+		if (amountToTransfer < tenmoApplicationServices.getBalance(currentUser.getUser().getId())) {
+			System.out.println("transfer is ready");
 		}
 	}
 
@@ -150,6 +159,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			UserCredentials credentials = collectUserCredentials();
 		    try {
 				currentUser = authenticationService.login(credentials);
+				tenmoApplicationServices = new TenmoApplicationServices(API_BASE_URL, currentUser.getToken());
 			} catch (AuthenticationServiceException e) {
 				System.out.println("LOGIN ERROR: "+e.getMessage());
 				System.out.println("Please attempt to login again.");

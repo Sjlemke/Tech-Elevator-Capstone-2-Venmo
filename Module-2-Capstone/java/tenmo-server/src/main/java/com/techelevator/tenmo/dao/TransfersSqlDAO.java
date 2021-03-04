@@ -38,14 +38,13 @@ public class TransfersSqlDAO implements TransfersDAO {
 	}
 	
 	public Transfers createTransfers(int accountFrom, int accountTo, double amount) {
-		Integer nextId;
-		SqlRowSet nextIdResult = jdbcTemplate.queryForRowSet("SELECT nextval('seq_department_id')");
+		Integer nextId = 0;
+		SqlRowSet nextIdResult = jdbcTemplate.queryForRowSet("SELECT nextval('seq_transfer_id')");
 		if(nextIdResult.next()) {               
 			nextId = nextIdResult.getInt(1);    
 		} else {                               
-			throw new RuntimeException("Something went wrong while getting an id for the new city");
+			throw new RuntimeException("Something went wrong while getting an id for the new transfer");
 		}
-		
 		
 		String sqlInsertTransfers = "INSERT INTO transfers(trasfer_type_id, transfer_status_id, account_from, account_to, _amount) " +
    				"VALUES(?, ?, ?, ?, ?)"; 

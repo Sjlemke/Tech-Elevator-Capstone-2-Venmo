@@ -13,17 +13,15 @@ import com.techelevator.tenmo.model.*;
 ********************************************************************************************************/
 
 @RestController
+@PreAuthorize("isAuthenticated()")
 public class ApiController {
 	private AccountDAO accountDAO;
 	private UserDAO userDAO;
 	
-	public ApiController(AccountDAO accountDAO) {
+	public ApiController(AccountDAO accountDAO, UserDAO userDAO) {
 		this.accountDAO = accountDAO;
-	}
-	public ApiController(UserDAO userDAO) {
 		this.userDAO = userDAO;
 	}
-	
 	
 	@RequestMapping(path = "/users/{user_id}/balance", method = RequestMethod.GET)
 	public Double getBalance(@PathVariable(value = "user_id") int id) {
@@ -34,5 +32,7 @@ public class ApiController {
 	public List<User> getAllUsers() {
 		return userDAO.findAll();
 	}
+	
+//	@RequestMapping(path = "/users/{user_id}")
 	    
 }

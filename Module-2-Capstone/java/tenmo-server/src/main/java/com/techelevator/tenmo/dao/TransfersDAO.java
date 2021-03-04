@@ -10,7 +10,7 @@ public interface TransfersDAO {
 	
 	public List<Transfers> getAllTransfers();
 
-//	public double getAmount();
+	public Transfers createTransfers(int userFromId, int userToId, double amount);
 //	
 //	public int getTransferStatusId();
 //	
