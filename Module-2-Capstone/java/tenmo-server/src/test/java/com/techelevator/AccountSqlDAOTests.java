@@ -1,17 +1,18 @@
 package com.techelevator;
 
 import org.junit.*;
+import static org.junit.Assert.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import java.sql.SQLException;
 
-import com.techelevator.tenmo.dao.AccountSqlDAO;
+import com.techelevator.tenmo.dao.*;
 
 public class AccountSqlDAOTests {
 
 	private static SingleConnectionDataSource dataSource;
-	private AccountSqlDAO dao;
+	private AccountDAO dao;
 	
 	@BeforeClass
 	public static void setupDataSource() {
@@ -34,8 +35,15 @@ public class AccountSqlDAOTests {
 		dao = new AccountSqlDAO(jdbcTemplate);
 	}
 	
+	@After
+	public void rollback() throws SQLException {
+		dataSource.getConnection().rollback();
+	}
+	
 	@Test
-	public void test() {
-		
+	public void checkGetBalanceCorrect() {
+		Double correct = 1000.00;
+		Double toCheck = dao.getBalanceByUserId(1);
+		assertEquals(correct, toCheck);
 	}
 }

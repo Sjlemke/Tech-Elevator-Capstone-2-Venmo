@@ -2,7 +2,9 @@ package com.techelevator.tenmo.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AccountSqlDAO implements AccountDAO {
 	private JdbcTemplate jdbcTemplate;
 
@@ -18,6 +20,6 @@ public class AccountSqlDAO implements AccountDAO {
     						"WHERE accounts.user_id = ?";
     	SqlRowSet results = jdbcTemplate.queryForRowSet(getBalance, userId);
     	results.next();
-    	return results.getDouble(1);
+    	return results.getDouble("balance");
     }
 }
