@@ -16,7 +16,7 @@ public interface TransfersDAO {
 //	
 //	public int getTransferTypeId();
 	
-	public void transferAmountTo(Transfers transfer, Account fromAccount, Account toAccount);
+	public void transferAmountTo(Transfers transfer, Double fromBalance, Double toBalance);
 	
 //	public List<Transfers> getAllTransfersById(int userId);
 		

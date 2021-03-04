@@ -103,7 +103,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		double amountToTransfer = Double.parseDouble(input.next());
 		
 		if (amountToTransfer < tenmoApplicationServices.getBalance(currentUser.getUser().getId())) {
-			System.out.println("transfer is ready");
+			Transfers sendTransfer = tenmoApplicationServices.createTransfers(currentUser.getUser().getId(), toUserId, amountToTransfer);
 		}
 	}
 

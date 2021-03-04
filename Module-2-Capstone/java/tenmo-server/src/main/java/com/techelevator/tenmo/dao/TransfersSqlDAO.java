@@ -4,10 +4,12 @@ import java.util.*;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfers;
 
+@Component
 public class TransfersSqlDAO implements TransfersDAO {
 	
 	private JdbcTemplate jdbcTemplate;
@@ -29,11 +31,11 @@ public class TransfersSqlDAO implements TransfersDAO {
 		return allTransfers;
 	}
 	
-	public void transferAmountTo(Transfers transfer, Account fromAccount, Account toAccount) {
-		if (transfer.getAmount() > fromAccount.getBalance()) {
+	public void transferAmountTo(Transfers transfer, Double fromBalance, Double toBalance) {
+		if (transfer.getAmount() > fromBalance) {
 			String transferAmount = "UPDATE accounts SET balance = ? WHERE account_id = ?";
-			jdbcTemplate.update(transferAmount, fromAccount.getBalance() - transfer.getAmount(), transfer.getAccountFrom());
-			jdbcTemplate.update(transferAmount, fromAccount.getBalance() + transfer.getAmount(), transfer.getAccountTo());
+			jdbcTemplate.update(transferAmount, fromBalance - transfer.getAmount(), transfer.getAccountFrom());
+			jdbcTemplate.update(transferAmount, toBalance + transfer.getAmount(), transfer.getAccountTo());
 		}
 	}
 	
@@ -46,8 +48,8 @@ public class TransfersSqlDAO implements TransfersDAO {
 			throw new RuntimeException("Something went wrong while getting an id for the new transfer");
 		}
 		
-		String sqlInsertTransfers = "INSERT INTO transfers(trasfer_type_id, transfer_status_id, account_from, account_to, _amount) " +
-   				"VALUES(?, ?, ?, ?, ?)"; 
+		String sqlInsertTransfers = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+   				"VALUES(?, ?, ?, ?, ?)";
 		jdbcTemplate.update(sqlInsertTransfers, 2, 2, accountFrom, accountTo, amount);
 		Transfers newTransfers = new Transfers();
         newTransfers.setAccountFrom(accountFrom);

@@ -17,10 +17,12 @@ import com.techelevator.tenmo.model.*;
 public class ApiController {
 	private AccountDAO accountDAO;
 	private UserDAO userDAO;
+	private TransfersDAO transfersDAO;
 	
-	public ApiController(AccountDAO accountDAO, UserDAO userDAO) {
+	public ApiController(AccountDAO accountDAO, UserDAO userDAO, TransfersDAO transfersDAO) {
 		this.accountDAO = accountDAO;
 		this.userDAO = userDAO;
+		this.transfersDAO = transfersDAO;
 	}
 	
 	@RequestMapping(path = "/users/{user_id}/balance", method = RequestMethod.GET)
@@ -33,6 +35,14 @@ public class ApiController {
 		return userDAO.findAll();
 	}
 	
-//	@RequestMapping(path = "/users/{user_id}")
-	    
+	@RequestMapping(path = "/users/{user_id}/transfer/{other_id}", method = RequestMethod.POST)
+	public Transfers createTransfers(@PathVariable(value = "user_id") int fromId, @PathVariable(value = "other_id") int toId, @RequestBody Double amount) {
+		return transfersDAO.createTransfers(fromId, toId, amount);
+	}
+	
+	@RequestMapping(path = "/users/{user_id}/transfer/{other_id}", method = RequestMethod.PUT)
+	public void doTransfer(@PathVariable(value = "user_id") int fromId, @PathVariable(value = "other_id") int toId,
+						   @RequestBody Transfers transfer, @RequestBody Double fromBalance, @RequestBody Double toBalance) {
+		transfersDAO.transferAmountTo(transfer, fromBalance, toBalance);
+	}
 }
