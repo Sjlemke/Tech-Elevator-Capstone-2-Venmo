@@ -60,7 +60,7 @@ public class TenmoApplicationServices {
 	private HttpEntity<?> makeAuthEntityWithAmount(Transfers transfer, Double fromBalance, Double toBalance) {
 		HttpHeaders header = new HttpHeaders();
 		header.setBearerAuth(AUTH_TOKEN);
-		HttpEntity<?> entity = new HttpEntity<>(transfer, header);
+		HttpEntity<?> entity = new HttpEntity<>(fromBalance, header);
 		return entity;
 	}
 }

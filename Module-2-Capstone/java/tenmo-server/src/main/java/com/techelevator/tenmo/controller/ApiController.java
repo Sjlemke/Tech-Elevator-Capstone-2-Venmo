@@ -42,7 +42,7 @@ public class ApiController {
 	
 	@RequestMapping(path = "/users/{user_id}/transfer/{other_id}", method = RequestMethod.PUT)
 	public void doTransfer(@PathVariable(value = "user_id") int fromId, @PathVariable(value = "other_id") int toId,
-						   @RequestBody Transfers transfer, @RequestBody Double fromBalance, @RequestBody Double toBalance) {
-		transfersDAO.transferAmountTo(transfer, fromBalance, toBalance);
+						   @RequestBody Transfers transfer) {
+//		transfersDAO.transferAmountTo(transfer, fromId, toId);
 	}
 }
