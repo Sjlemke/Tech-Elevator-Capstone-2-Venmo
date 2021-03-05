@@ -50,6 +50,22 @@ public class TenmoApplicationServices {
 		return restTemplate.exchange(URL + "/users/" + userId + "/wantedTransfer/" + transferId, HttpMethod.GET, makeAuthEntity(), Transfers.class).getBody();
 	}
 	
+	public int getAccountIdByUserId(int userId) {
+		return restTemplate.exchange(URL + "/users/" + userId + "/account", HttpMethod.GET, makeAuthEntity(), int.class).getBody();
+	}
+	
+	public String getUsernameByAccountId(int accountId) {
+		return restTemplate.exchange(URL + "/accounts/" + accountId, HttpMethod.GET, makeAuthEntity(), String.class).getBody();
+	}
+	
+	public String getDescByStatusId(int statusId) {
+		return restTemplate.exchange(URL + "/statuses/" + statusId, HttpMethod.GET, makeAuthEntity(), String.class).getBody();
+	}
+	
+	public String getDescByTypeId(int typeId) {
+		return restTemplate.exchange(URL + "/transferTypes/" + typeId, HttpMethod.GET, makeAuthEntity(), String.class).getBody();
+	}
+	
 	private HttpEntity<?> makeAuthEntity() {
 		HttpHeaders header = new HttpHeaders();
 		header.setBearerAuth(AUTH_TOKEN);
@@ -63,13 +79,6 @@ public class TenmoApplicationServices {
 		HttpEntity<?> entity = new HttpEntity<>(amount, header);
 		return entity;
 	}
-	
-//	private HttpEntity<?> makeAuthEntityWithId(int id) {
-//		HttpHeaders header = new HttpHeaders();
-//		header.setBearerAuth(AUTH_TOKEN);
-//		HttpEntity<?> entity = new HttpEntity<>(id, header);
-//		return entity;
-//	}
 	
 	private HttpEntity<?> makeAuthEntityWithTransfer(Transfers transfer) {
 		HttpHeaders header = new HttpHeaders();

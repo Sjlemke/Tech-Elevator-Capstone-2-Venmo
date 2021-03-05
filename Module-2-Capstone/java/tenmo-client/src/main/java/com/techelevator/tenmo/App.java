@@ -78,26 +78,36 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewTransferHistory() {
 		List<Transfers> allTransfers = tenmoApplicationServices.getAllTransfersByUserId(currentUser.getUser().getId());
-		System.out.println("View your transfer history");
-		for (Transfers atransfer : allTransfers) {
-			System.out.println("The transfer Id is: " + atransfer.getTransferId());
-			System.out.println("From account: " + atransfer.getAccountFrom());
-			System.out.println("To account: " + atransfer.getAccountTo());
-			System.out.println("Send amount: " + atransfer.getAmount());
+		System.out.println("Transfer History");
+		System.out.printf("%5s   %-20s  %-10s\n", "ID", "From/To", "Amount");
+		System.out.println("----------------------------------------");
+		for (Transfers aTransfer : allTransfers) {
+			String otherUserToPrint = "";
+			if (aTransfer.getAccountFrom() == tenmoApplicationServices.getAccountIdByUserId(currentUser.getUser().getId())) {
+				otherUserToPrint = "To: " + tenmoApplicationServices.getUsernameByAccountId(aTransfer.getAccountTo());
+			} else {
+				otherUserToPrint = "From: " + tenmoApplicationServices.getUsernameByAccountId(aTransfer.getAccountFrom());
+			}
+			System.out.printf("%5s   %-20s  $%.2f\n", aTransfer.getTransferId(), otherUserToPrint, aTransfer.getAmount());
+//			System.out.println("The transfer Id is: " + atransfer.getTransferId());
+//			System.out.println("From account: " + atransfer.getAccountFrom());
+//			System.out.println("To account: " + atransfer.getAccountTo());
+//			System.out.println("Send amount: " + atransfer.getAmount());
 		}
 		
 		@SuppressWarnings("resource")
 		Scanner input = new Scanner(System.in);
-		System.out.print("Enter a transfer ID to view more details: ");
+		System.out.print("\nEnter a transfer ID to view more details (0 to cancel): ");
 		int wantedTransferId = Integer.parseInt(input.next());
 		if (wantedTransferId > 0) {
 			Transfers wantedTransfer = tenmoApplicationServices.getSingleTransfer(currentUser.getUser().getId(), wantedTransferId);
-			System.out.println("The transfer Id is: " + wantedTransfer.getTransferId());
-			System.out.println("From account: " + wantedTransfer.getAccountFrom());
-			System.out.println("To account: " + wantedTransfer.getAccountTo());
-			System.out.println("Type: " + wantedTransfer.getTransferTypeId());
-			System.out.println("Status: " + wantedTransfer.getTransferStatusId());
-			System.out.println("Send amount: " + wantedTransfer.getAmount());
+
+			System.out.println("Transfer ID:     " + wantedTransfer.getTransferId());
+			System.out.println("From account:    " + tenmoApplicationServices.getUsernameByAccountId(wantedTransfer.getAccountFrom()));
+			System.out.println("To account:      " + tenmoApplicationServices.getUsernameByAccountId(wantedTransfer.getAccountTo()));
+			System.out.println("Transfer Type:   " + tenmoApplicationServices.getDescByTypeId(wantedTransfer.getTransferTypeId()));
+			System.out.println("Transfer Status: " + tenmoApplicationServices.getDescByStatusId(wantedTransfer.getTransferStatusId()));
+			System.out.printf("Send amount:     $%.2f\n", wantedTransfer.getAmount());
 		}
 	}
 	

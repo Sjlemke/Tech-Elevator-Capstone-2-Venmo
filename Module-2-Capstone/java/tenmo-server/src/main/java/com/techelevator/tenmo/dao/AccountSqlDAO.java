@@ -24,4 +24,12 @@ public class AccountSqlDAO implements AccountDAO {
     	results.next();
     	return results.getDouble("balance");
     }
+    
+    @Override
+    public int getAccountIdByUserId(int userId) {
+    	String getAccountId = "SELECT account_id FROM accounts JOIN users ON users.user_id = accounts.user_id WHERE users.user_id = ?";
+    	SqlRowSet results = jdbcTemplate.queryForRowSet(getAccountId, userId);
+    	results.next();
+    	return results.getInt("account_id");
+    }
 }

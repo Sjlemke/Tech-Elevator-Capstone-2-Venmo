@@ -18,11 +18,15 @@ public class ApiController {
 	private AccountDAO accountDAO;
 	private UserDAO userDAO;
 	private TransfersDAO transfersDAO;
+	private TransferStatusesDAO transferStatusesDAO;
+	private TransferTypesDAO transferTypesDAO;
 	
-	public ApiController(AccountDAO accountDAO, UserDAO userDAO, TransfersDAO transfersDAO) {
+	public ApiController(AccountDAO accountDAO, UserDAO userDAO, TransfersDAO transfersDAO, TransferStatusesDAO transferStatusesDAO, TransferTypesDAO transferTypesDAO) {
 		this.accountDAO = accountDAO;
 		this.userDAO = userDAO;
 		this.transfersDAO = transfersDAO;
+		this.transferStatusesDAO = transferStatusesDAO;
+		this.transferTypesDAO = transferTypesDAO;
 	}
 	
 	@RequestMapping(path = "/users/{user_id}/balance", method = RequestMethod.GET)
@@ -59,5 +63,23 @@ public class ApiController {
 		return transfersDAO.getAllTransfersByUserId(userId);
 	}
 	
+	@RequestMapping(path = "/users/{user_id}/account", method = RequestMethod.GET)
+	public int getAccountIdByUserid(@PathVariable(value = "user_id") int userId) {
+		return accountDAO.getAccountIdByUserId(userId);
+	}
 	
+	@RequestMapping(path = "/accounts/{account_id}", method = RequestMethod.GET)
+	public String getUsernameByAccountId(@PathVariable(value = "account_id") int accountId) {
+		return userDAO.getUsernameByAccountId(accountId);
+	}
+	
+	@RequestMapping(path = "/statuses/{status_id}", method = RequestMethod.GET)
+	public String getDescriptionbyStatusId(@PathVariable(value = "status_id") int statusId) {
+		return transferStatusesDAO.getStatusDescById(statusId);
+	}
+	
+	@RequestMapping(path = "/transferTypes/{type_id}", method = RequestMethod.GET)
+	public String getDescriptionbyTypeId(@PathVariable(value = "type_id") int typeId) {
+		return transferTypesDAO.getTransferTypeById(typeId);
+	}
 }

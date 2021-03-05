@@ -21,7 +21,15 @@ public class UserSqlDAO implements UserDAO {
     public UserSqlDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-
+    
+    @Override
+    public String getUsernameByAccountId(int accountId) {
+    	String getUsername = "SELECT users.username FROM users JOIN accounts ON accounts.user_id = users.user_id WHERE accounts.account_id = ?";
+    	SqlRowSet searchResults = jdbcTemplate.queryForRowSet(getUsername, accountId);
+    	searchResults.next();
+    	return searchResults.getString("username");
+    }
+    
     @Override
     public int findIdByUsername(String username) {
         return jdbcTemplate.queryForObject("select user_id from users where username = ?", int.class, username);
