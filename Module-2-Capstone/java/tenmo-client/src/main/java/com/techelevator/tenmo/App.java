@@ -85,6 +85,20 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			System.out.println("To account: " + atransfer.getAccountTo());
 			System.out.println("Send amount: " + atransfer.getAmount());
 		}
+		
+		@SuppressWarnings("resource")
+		Scanner input = new Scanner(System.in);
+		System.out.print("Enter a transfer ID to view more details: ");
+		int wantedTransferId = Integer.parseInt(input.next());
+		if (wantedTransferId > 0) {
+			Transfers wantedTransfer = tenmoApplicationServices.getSingleTransfer(currentUser.getUser().getId(), wantedTransferId);
+			System.out.println("The transfer Id is: " + wantedTransfer.getTransferId());
+			System.out.println("From account: " + wantedTransfer.getAccountFrom());
+			System.out.println("To account: " + wantedTransfer.getAccountTo());
+			System.out.println("Type: " + wantedTransfer.getTransferTypeId());
+			System.out.println("Status: " + wantedTransfer.getTransferStatusId());
+			System.out.println("Send amount: " + wantedTransfer.getAmount());
+		}
 	}
 	
 	private void viewPendingRequests() {
@@ -107,7 +121,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		
 		System.out.print("\nEnter the ID to send to (0 to cancel): ");
 		Integer toUserId = Integer.parseInt(input.next());
-		if (toUserId != 0) {
+		if (toUserId > 0) {
 			System.out.print("Enter the amount you want to transfer over: ");
 			Double amountToTransfer = Double.parseDouble(input.next());
 			

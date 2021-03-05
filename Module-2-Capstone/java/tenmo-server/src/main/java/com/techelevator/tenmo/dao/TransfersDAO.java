@@ -9,6 +9,8 @@ public interface TransfersDAO {
 	
 	public List<Transfers> getAllTransfersByUserId(int userId);
 
+	public Transfers getSingleTransfer(int transferId);
+	
 	public Transfers createTransfers(int userFromId, int userToId, double amount);
 //	
 //	public int getTransferStatusId();

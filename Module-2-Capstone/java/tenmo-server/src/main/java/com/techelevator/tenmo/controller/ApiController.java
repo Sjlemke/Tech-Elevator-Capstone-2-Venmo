@@ -48,6 +48,11 @@ public class ApiController {
 		
 		
 	}
+	@RequestMapping(path = "/users/{user_id}/wantedTransfer/{transfer_id}", method = RequestMethod.GET)
+	public Transfers getSingleTransfers(@PathVariable(value = "user_id") int fromUserId, @PathVariable(value = "transfer_id") int transferId) { 
+		return transfersDAO.getSingleTransfer(transferId);
+	}
+
 	@RequestMapping(path = "/users/{user_id}/transfer_history", method = RequestMethod.GET)
 	public List<Transfers> getAllTransfersByUserId(@PathVariable(value = "user_id") int userId) {
 		

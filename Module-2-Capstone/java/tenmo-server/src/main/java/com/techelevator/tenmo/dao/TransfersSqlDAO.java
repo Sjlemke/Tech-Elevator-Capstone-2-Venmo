@@ -47,6 +47,23 @@ public class TransfersSqlDAO implements TransfersDAO {
 		jdbcTemplate.update(transferAmount, toBalance + transfer.getAmount(), transfer.getAccountTo());
 	}
 	
+	public Transfers getSingleTransfer(int transferId) {
+		String getTransferInfo = "SELECT * FROM transfers WHERE transfer_id = ? ";
+		SqlRowSet searchResults = jdbcTemplate.queryForRowSet(getTransferInfo, transferId);
+		searchResults.next();
+		Transfers wantedTransfers = new Transfers();
+		wantedTransfers.setAccountFrom(searchResults.getInt("account_from"));
+		wantedTransfers.setAccountTo(searchResults.getInt("account_to"));
+		wantedTransfers.setAmount(searchResults.getDouble("amount"));
+		wantedTransfers.setTransferId(searchResults.getInt("transfer_id"));
+		wantedTransfers.setTransferStatusId(searchResults.getInt("transfer_status_id"));
+		wantedTransfers.setTransferTypeId(searchResults.getInt("transfer_type_id"));
+		
+		return wantedTransfers;
+		
+	}
+	
+	
 	public Transfers createTransfers(int fromUserId, int toUserId, double amount) {
 		String getAccount = "SELECT * FROM accounts WHERE user_id = ?";
 		SqlRowSet fromAccountResults = jdbcTemplate.queryForRowSet(getAccount, fromUserId);
