@@ -2,7 +2,6 @@ package com.techelevator.tenmo.dao;
 
 import java.util.List;
 
-import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfers;
 
 
@@ -16,7 +15,7 @@ public interface TransfersDAO {
 //	
 //	public int getTransferTypeId();
 	
-	public void transferAmountTo(Transfers transfer, Double fromBalance, Double toBalance);
+	public void transferAmountTo(Transfers transfer);
 	
 //	public List<Transfers> getAllTransfersById(int userId);
 		

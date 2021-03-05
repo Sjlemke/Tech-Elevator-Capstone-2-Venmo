@@ -27,20 +27,18 @@ public class TenmoApplicationServices {
 	
 	public Double getBalance(Integer userId) {
 		return restTemplate.exchange(URL + "/users/" + userId + "/balance", HttpMethod.GET, makeAuthEntity(), Double.class).getBody();
-//		return restTemplate.getForObject(URL + "/users/" + userId + "/balance", Double.class);
 	}
 	
 	public List<User> getAllUsers() {
 		return Arrays.asList(restTemplate.exchange(URL + "/users", HttpMethod.GET, makeAuthEntity(), User[].class).getBody());
-		//		return Arrays.asList(restTemplate.getForObject(URL + "/users/" , User[].class));
 	}
 	
 	public Transfers createTransfers(int userId, int otherId, Double amount) {
 		return restTemplate.exchange(URL + "/users/" + userId + "/transfer/" + otherId, HttpMethod.POST, makeAuthEntityWithAmount(amount), Transfers.class).getBody();
 	}
 	
-	public void doTransfer(int userId, int otherId, Transfers transfer, double fromBalance, double toBalance) {
-		restTemplate.exchange(URL + "/users/" + userId + "/transfer/" + otherId, HttpMethod.POST, makeAuthEntityWithAmount(transfer, fromBalance, toBalance), Transfers.class);
+	public void doTransfer(Integer userId, Integer otherId, Transfers transfer) {
+		restTemplate.exchange(URL + "/users/" + userId + "/transfer/" + otherId, HttpMethod.PUT, makeAuthEntityWithTransfer(transfer), Transfers.class);
 	}
 	
 	private HttpEntity<?> makeAuthEntity() {
@@ -57,10 +55,10 @@ public class TenmoApplicationServices {
 		return entity;
 	}
 	
-	private HttpEntity<?> makeAuthEntityWithAmount(Transfers transfer, Double fromBalance, Double toBalance) {
+	private HttpEntity<?> makeAuthEntityWithTransfer(Transfers transfer) {
 		HttpHeaders header = new HttpHeaders();
 		header.setBearerAuth(AUTH_TOKEN);
-		HttpEntity<?> entity = new HttpEntity<>(fromBalance, header);
+		HttpEntity<?> entity = new HttpEntity<>(transfer, header);
 		return entity;
 	}
 }

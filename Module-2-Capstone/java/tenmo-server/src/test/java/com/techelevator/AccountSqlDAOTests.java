@@ -1,7 +1,10 @@
 package com.techelevator;
 
-import org.junit.*;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.*;
+//import org.junit.*;
+import static org.junit.jupiter.api.Assertions.*;
+//import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
@@ -14,7 +17,7 @@ public class AccountSqlDAOTests {
 	private static SingleConnectionDataSource dataSource;
 	private AccountDAO dao;
 	
-	@BeforeClass
+	@BeforeAll
 	public static void setupDataSource() {
 		dataSource = new SingleConnectionDataSource();
 		
@@ -24,18 +27,18 @@ public class AccountSqlDAOTests {
 		dataSource.setAutoCommit(false);
 	}
 	
-	@AfterClass
+	@AfterAll
 	public static void closeDataSource() throws SQLException {
 		dataSource.destroy();
 	}
 	
-	@Before
+	@BeforeEach
 	public void setup() {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		dao = new AccountSqlDAO(jdbcTemplate);
 	}
 	
-	@After
+	@AfterEach
 	public void rollback() throws SQLException {
 		dataSource.getConnection().rollback();
 	}

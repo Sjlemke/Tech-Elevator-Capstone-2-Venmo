@@ -36,13 +36,13 @@ public class ApiController {
 	}
 	
 	@RequestMapping(path = "/users/{user_id}/transfer/{other_id}", method = RequestMethod.POST)
-	public Transfers createTransfers(@PathVariable(value = "user_id") int fromId, @PathVariable(value = "other_id") int toId, @RequestBody Double amount) {
-		return transfersDAO.createTransfers(fromId, toId, amount);
+	public Transfers createTransfers(@PathVariable(value = "user_id") int fromUserId, @PathVariable(value = "other_id") int toUserId, @RequestBody Double amount) {
+		return transfersDAO.createTransfers(fromUserId, toUserId, amount);
 	}
 	
 	@RequestMapping(path = "/users/{user_id}/transfer/{other_id}", method = RequestMethod.PUT)
 	public void doTransfer(@PathVariable(value = "user_id") int fromId, @PathVariable(value = "other_id") int toId,
 						   @RequestBody Transfers transfer) {
-//		transfersDAO.transferAmountTo(transfer, fromId, toId);
+		transfersDAO.transferAmountTo(transfer);
 	}
 }

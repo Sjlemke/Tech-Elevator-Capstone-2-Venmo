@@ -96,14 +96,20 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			System.out.printf("%5s   %-15s\n", aUser.getId(), aUser.getUsername());
 		}
 		
+		@SuppressWarnings("resource")
 		Scanner input = new Scanner(System.in);
-		System.out.print("\nEnter the ID to send to: ");
-		int toUserId = Integer.parseInt(input.next());
-		System.out.print("Enter the amount you want to transfer over: ");
-		double amountToTransfer = Double.parseDouble(input.next());
 		
-		if (amountToTransfer < tenmoApplicationServices.getBalance(currentUser.getUser().getId())) {
-			Transfers sendTransfer = tenmoApplicationServices.createTransfers(currentUser.getUser().getId(), toUserId, amountToTransfer);
+		System.out.print("\nEnter the ID to send to (0 to cancel): ");
+		Integer toUserId = Integer.parseInt(input.next());
+		if (toUserId != 0) {
+			System.out.print("Enter the amount you want to transfer over: ");
+			Double amountToTransfer = Double.parseDouble(input.next());
+			
+			Double currentBalance = tenmoApplicationServices.getBalance(currentUser.getUser().getId());
+			if (currentBalance > amountToTransfer) {
+				Transfers createdTransfer = tenmoApplicationServices.createTransfers(currentUser.getUser().getId(), toUserId, amountToTransfer);
+				tenmoApplicationServices.doTransfer(currentUser.getUser().getId(), toUserId, createdTransfer);
+			}
 		}
 	}
 

@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
-import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfers;
 
 @Component
@@ -30,15 +29,29 @@ public class TransfersSqlDAO implements TransfersDAO {
 		return allTransfers;
 	}
 	
-	public void transferAmountTo(Transfers transfer, Double fromBalance, Double toBalance) {
-		if (transfer.getAmount() > fromBalance) {
-			String transferAmount = "UPDATE accounts SET balance = ? WHERE account_id = ?";
-			jdbcTemplate.update(transferAmount, fromBalance - transfer.getAmount(), transfer.getAccountFrom());
-			jdbcTemplate.update(transferAmount, toBalance + transfer.getAmount(), transfer.getAccountTo());
-		}
+	public void transferAmountTo(Transfers transfer) {
+		String getAccount = "SELECT * FROM accounts WHERE account_id = ?";
+		SqlRowSet fromAccountResults = jdbcTemplate.queryForRowSet(getAccount, transfer.getAccountFrom());
+		fromAccountResults.next();
+		double fromBalance = fromAccountResults.getDouble("balance");
+		SqlRowSet toAccountResults = jdbcTemplate.queryForRowSet(getAccount, transfer.getAccountTo());
+		toAccountResults.next();
+		double toBalance = toAccountResults.getDouble("balance");
+		
+		String transferAmount = "UPDATE accounts SET balance = ? WHERE account_id = ?";
+		jdbcTemplate.update(transferAmount, fromBalance - transfer.getAmount(), transfer.getAccountFrom());
+		jdbcTemplate.update(transferAmount, toBalance + transfer.getAmount(), transfer.getAccountTo());
 	}
 	
-	public Transfers createTransfers(int accountFrom, int accountTo, double amount) {
+	public Transfers createTransfers(int fromUserId, int toUserId, double amount) {
+		String getAccount = "SELECT * FROM accounts WHERE user_id = ?";
+		SqlRowSet fromAccountResults = jdbcTemplate.queryForRowSet(getAccount, fromUserId);
+		fromAccountResults.next();
+		int fromAccountId = fromAccountResults.getInt("account_id");
+		SqlRowSet toAccountResults = jdbcTemplate.queryForRowSet(getAccount, toUserId);
+		toAccountResults.next();
+		int toAccountId = toAccountResults.getInt("account_id");
+		
 		Integer nextId = 0;
 		SqlRowSet nextIdResult = jdbcTemplate.queryForRowSet("SELECT nextval('seq_transfer_id')");
 		if(nextIdResult.next()) {               
@@ -47,12 +60,12 @@ public class TransfersSqlDAO implements TransfersDAO {
 			throw new RuntimeException("Something went wrong while getting an id for the new transfer");
 		}
 		
-		String sqlInsertTransfers = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
-   				"VALUES(?, ?, ?, ?, ?)";
-		jdbcTemplate.update(sqlInsertTransfers, 2, 2, accountFrom, accountTo, amount);
+		String sqlInsertTransfers = "INSERT INTO transfers(transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+   				"VALUES(?, ?, ?, ?, ?, ?)";
+		jdbcTemplate.update(sqlInsertTransfers, nextId, 2, 2, fromAccountId, toAccountId, amount);
 		Transfers newTransfers = new Transfers();
-        newTransfers.setAccountFrom(accountFrom);
-        newTransfers.setAccountTo(accountTo);
+        newTransfers.setAccountFrom(fromAccountId);
+        newTransfers.setAccountTo(toAccountId);
         newTransfers.setAmount(amount);
         newTransfers.setTransferId(2);
         newTransfers.setTransferStatusId(2);
@@ -60,7 +73,6 @@ public class TransfersSqlDAO implements TransfersDAO {
         
         return newTransfers;
 	}
-	
 	
 	private Transfers mapRowToTransfers(SqlRowSet results) {
 		Transfers singleTransfer = new Transfers();
