@@ -77,10 +77,16 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
-		
+		List<Transfers> allTransfers = tenmoApplicationServices.getAllTransfersByUserId(currentUser.getUser().getId());
+		System.out.println("View your transfer history");
+		for (Transfers atransfer : allTransfers) {
+			System.out.println("The transfer Id is: " + atransfer.getTransferId());
+			System.out.println("From account: " + atransfer.getAccountFrom());
+			System.out.println("To account: " + atransfer.getAccountTo());
+			System.out.println("Send amount: " + atransfer.getAmount());
+		}
 	}
-
+	
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub
 		

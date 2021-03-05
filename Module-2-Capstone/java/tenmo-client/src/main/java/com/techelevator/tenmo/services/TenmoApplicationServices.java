@@ -41,6 +41,13 @@ public class TenmoApplicationServices {
 		restTemplate.exchange(URL + "/users/" + userId + "/transfer/" + otherId, HttpMethod.PUT, makeAuthEntityWithTransfer(transfer), Transfers.class);
 	}
 	
+	public List<Transfers> getAllTransfersByUserId(int userId) {
+		return Arrays.asList(restTemplate.exchange(URL + "/users/" + userId + "/transfer_history",  HttpMethod.GET, makeAuthEntity(), Transfers[].class).getBody());
+		
+		
+	}
+	
+	
 	private HttpEntity<?> makeAuthEntity() {
 		HttpHeaders header = new HttpHeaders();
 		header.setBearerAuth(AUTH_TOKEN);

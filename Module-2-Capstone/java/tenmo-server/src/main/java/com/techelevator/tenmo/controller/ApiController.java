@@ -40,9 +40,19 @@ public class ApiController {
 		return transfersDAO.createTransfers(fromUserId, toUserId, amount);
 	}
 	
+	
 	@RequestMapping(path = "/users/{user_id}/transfer/{other_id}", method = RequestMethod.PUT)
 	public void doTransfer(@PathVariable(value = "user_id") int fromId, @PathVariable(value = "other_id") int toId,
 						   @RequestBody Transfers transfer) {
 		transfersDAO.transferAmountTo(transfer);
+		
+		
 	}
+	@RequestMapping(path = "/users/{user_id}/transfer_history", method = RequestMethod.GET)
+	public List<Transfers> getAllTransfersByUserId(@PathVariable(value = "user_id") int userId) {
+		
+		return transfersDAO.getAllTransfersByUserId(userId);
+	}
+	
+	
 }

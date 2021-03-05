@@ -7,7 +7,7 @@ import com.techelevator.tenmo.model.Transfers;
 
 public interface TransfersDAO {
 	
-	public List<Transfers> getAllTransfersByAccountId(int accountId);
+	public List<Transfers> getAllTransfersByUserId(int userId);
 
 	public Transfers createTransfers(int userFromId, int userToId, double amount);
 //	

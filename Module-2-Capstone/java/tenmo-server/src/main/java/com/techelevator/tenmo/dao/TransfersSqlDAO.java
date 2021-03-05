@@ -17,7 +17,11 @@ public class TransfersSqlDAO implements TransfersDAO {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 	
-	public List<Transfers> getAllTransfersByAccountId(int accountId) {
+	public List<Transfers> getAllTransfersByUserId(int userId) {
+		String getAccount = "SELECT * FROM accounts WHERE user_id = ?";
+		SqlRowSet fromAccountResults = jdbcTemplate.queryForRowSet(getAccount, userId);
+		fromAccountResults.next();
+		int accountId = fromAccountResults.getInt("account_id");
 		List<Transfers> allTransfers = new ArrayList<Transfers>();
 		String getAllTransfersByAccountId = "SELECT * FROM transfers WHERE account_to = ? OR account_from = ? ";
 		SqlRowSet results = jdbcTemplate.queryForRowSet(getAllTransfersByAccountId, accountId, accountId);
@@ -77,6 +81,7 @@ public class TransfersSqlDAO implements TransfersDAO {
 	private Transfers mapRowToTransfers(SqlRowSet results) {
 		Transfers singleTransfer = new Transfers();
 		singleTransfer.setTransferTypeId(results.getInt("transfer_type_id"));
+		singleTransfer.setTransferId(results.getInt("transfer_id"));
 		singleTransfer.setTransferStatusId(results.getInt("transfer_status_id"));
 		singleTransfer.setAccountFrom(results.getInt("account_from"));
 		singleTransfer.setAccountTo(results.getInt("account_to"));
