@@ -78,10 +78,12 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewTransferHistory() {
 		List<Transfers> allTransfers = tenmoApplicationServices.getAllTransfersByUserId(currentUser.getUser().getId());
-		System.out.println("Transfer History");
+		List<Integer> transfersIds = new ArrayList<Integer>();
+		System.out.println("Transfer History\n");
 		System.out.printf("%5s   %-20s  %-10s\n", "ID", "From/To", "Amount");
 		System.out.println("----------------------------------------");
 		for (Transfers aTransfer : allTransfers) {
+			transfersIds.add(aTransfer.getTransferId());
 			String otherUserToPrint = "";
 			if (aTransfer.getAccountFrom() == tenmoApplicationServices.getAccountIdByUserId(currentUser.getUser().getId())) {
 				otherUserToPrint = "To: " + tenmoApplicationServices.getUsernameByAccountId(aTransfer.getAccountTo());
@@ -89,16 +91,26 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				otherUserToPrint = "From: " + tenmoApplicationServices.getUsernameByAccountId(aTransfer.getAccountFrom());
 			}
 			System.out.printf("%5s   %-20s  $%.2f\n", aTransfer.getTransferId(), otherUserToPrint, aTransfer.getAmount());
-//			System.out.println("The transfer Id is: " + atransfer.getTransferId());
-//			System.out.println("From account: " + atransfer.getAccountFrom());
-//			System.out.println("To account: " + atransfer.getAccountTo());
-//			System.out.println("Send amount: " + atransfer.getAmount());
 		}
 		
 		@SuppressWarnings("resource")
 		Scanner input = new Scanner(System.in);
-		System.out.print("\nEnter a transfer ID to view more details (0 to cancel): ");
-		int wantedTransferId = Integer.parseInt(input.next());
+		
+		Integer wantedTransferId = -1;
+		do {
+			try {
+				System.out.print("\nEnter a transfer ID to view more details (0 to cancel): ");
+				wantedTransferId = Integer.parseInt(input.next());
+			} catch (Exception e) {
+				System.out.println("Error: not a valid transfer ID");
+				wantedTransferId = -1;
+				break;
+			}
+			if (!transfersIds.contains(wantedTransferId)) {
+				System.out.println("Transfer ID not found");
+			}
+		} while (!transfersIds.contains(wantedTransferId));
+		
 		if (wantedTransferId > 0) {
 			Transfers wantedTransfer = tenmoApplicationServices.getSingleTransfer(currentUser.getUser().getId(), wantedTransferId);
 
@@ -119,18 +131,35 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private void sendBucks() {
 		// TODO Auto-generated method stub
 		List<User> allUsers = tenmoApplicationServices.getAllUsers();
+		List<Integer> usersIds = new ArrayList<Integer>();
 		System.out.println("Users list:\n");
 		System.out.printf("%5s   %-15s\n", "Id", "Username");
 		System.out.println("-------------------------");
 		for (User aUser : allUsers) {
-			System.out.printf("%5s   %-15s\n", aUser.getId(), aUser.getUsername());
+			if (aUser.getId() != currentUser.getUser().getId()) {
+				System.out.printf("%5s   %-15s\n", aUser.getId(), aUser.getUsername());
+				usersIds.add(aUser.getId());
+			}
 		}
 		
 		@SuppressWarnings("resource")
 		Scanner input = new Scanner(System.in);
 		
-		System.out.print("\nEnter the ID to send to (0 to cancel): ");
-		Integer toUserId = Integer.parseInt(input.next());
+		Integer toUserId = -1;
+		do {
+			try {
+				System.out.print("\nEnter the ID to send to (0 to cancel): ");
+				toUserId = Integer.parseInt(input.next());
+			} catch (Exception e) {
+				System.out.println("Error: not a valid user ID");
+				toUserId = -1;
+				break;
+			}
+			if (!usersIds.contains(toUserId)) {
+				System.out.println("User ID not found");
+			}
+		} while (!usersIds.contains(toUserId));
+		
 		if (toUserId > 0) {
 			System.out.print("Enter the amount you want to transfer over: ");
 			Double amountToTransfer = Double.parseDouble(input.next());
@@ -139,6 +168,9 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			if (currentBalance > amountToTransfer) {
 				Transfers createdTransfer = tenmoApplicationServices.createTransfers(currentUser.getUser().getId(), toUserId, amountToTransfer);
 				tenmoApplicationServices.doTransfer(currentUser.getUser().getId(), toUserId, createdTransfer);
+				System.out.println("Success!");
+			} else {
+				System.out.println("Failure: Transfer amount is more than the current balance");
 			}
 		}
 	}
