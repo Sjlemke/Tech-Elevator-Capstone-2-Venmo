@@ -106,10 +106,10 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				wantedTransferId = -1;
 				break;
 			}
-			if (!transfersIds.contains(wantedTransferId)) {
+			if (!transfersIds.contains(wantedTransferId) && wantedTransferId != 0) {
 				System.out.println("Transfer ID not found");
 			}
-		} while (!transfersIds.contains(wantedTransferId));
+		} while (!transfersIds.contains(wantedTransferId) && wantedTransferId != 0);
 		
 		if (wantedTransferId > 0) {
 			Transfers wantedTransfer = tenmoApplicationServices.getSingleTransfer(currentUser.getUser().getId(), wantedTransferId);
@@ -155,10 +155,10 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				toUserId = -1;
 				break;
 			}
-			if (!usersIds.contains(toUserId)) {
+			if (!usersIds.contains(toUserId) && toUserId != 0) {
 				System.out.println("User ID not found");
 			}
-		} while (!usersIds.contains(toUserId));
+		} while (!usersIds.contains(toUserId) & toUserId != 0);
 		
 		if (toUserId > 0) {
 			System.out.print("Enter the amount you want to transfer over: ");
